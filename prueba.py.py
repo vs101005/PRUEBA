@@ -57,7 +57,7 @@ if selected_protein:
 else:
     st.info("Selecciona una proteína para ver la secuencia.")
         
-#PROPORCION DE  ATOMOS
+#PROPORCION DE  Aminoacidos
 
 import matplotlib.pyplot as plt
 from collections import Counter
@@ -85,7 +85,7 @@ def calcular_proporcion(proteina):
     return aa_count
 
 # Interfaz Streamlit
-st.title("Proporción de Átomos en Proteínas")
+st.title("Proporción de Aminoacidos en Proteínas")
 
 # Opción para seleccionar la proteína
 proteina = st.selectbox("Selecciona una proteína", ["Insulina", "Glucagon", "Hemoglobina", "Colageno"])
