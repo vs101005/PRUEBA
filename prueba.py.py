@@ -109,9 +109,12 @@ else:
     st.write("No se encontró la secuencia para la proteína seleccionada.")
 
 #imagen
+import streamlit as st
+from PIL import Image
 
-# URL de la imagen
-image_url = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fvitae.ucv.ve%2F%3Fmodule%3Darticulo%26rv%3D177%26n%3D5600%26m%3D2%26e%3D5613&psig=AOvVaw2tuHV_tIQj9JU5J3XbC0JB&ust=1732427766235000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCLDGvb7i8YkDFQAAAAAdAAAAABAE"
+# Cargar una imagen desde un archivo local
+image = Image.open("path_to_your_image.png")
 
-# Mostrar la imagen desde la URL
-st.image(image_url, caption="Imagen de la proteína desde URL", use_column_width=True)
+# Mostrar la imagen en Streamlit
+st.image(image, caption="Imagen de la proteína", use_column_width=True)
+
