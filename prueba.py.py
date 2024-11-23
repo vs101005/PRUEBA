@@ -84,10 +84,10 @@ def calcular_proporcion(proteina):
     return aa_count
 
 # Interfaz Streamlit
-st.title("Proporción de Átomos en Proteínas")
+st.title("Proporción de Aminoacidos en Proteínas")
 
 # Opción para seleccionar la proteína
-proteina = st.selectbox("Selecciona una proteína", ["Insulina", "Glucagon", "Hemoglobina", "Colageno"])
+
 
 # Calcular la proporción de átomos
 aa_count = calcular_proporcion(proteina)
@@ -102,19 +102,11 @@ if aa_count:
     plt.bar(aminoacidos, cantidades, color='skyblue')
     plt.xlabel("Aminoácidos")
     plt.ylabel("Cantidad")
-    plt.title(f"Proporción de Átomos en la Proteína: {proteina}")
+    plt.title(f"Proporción de Aminoacidos en la Proteína: {proteina}")
     plt.xticks(rotation=45)
     st.pyplot(plt)
 else:
     st.write("No se encontró la secuencia para la proteína seleccionada.")
 
 #imagen
-import streamlit as st
-from PIL import Image
-
-# Cargar una imagen desde un archivo local
-image = Image.open("Screenshot 2024-11-22 225804.png")
-
-# Mostrar la imagen en Streamlit
-st.image(image, caption="Imagen de la proteína", use_column_width=True)
 
