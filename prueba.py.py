@@ -62,12 +62,12 @@ else:
 import streamlit as st
 import matplotlib.pyplot as plt
 from collections import Counter
-
+from Bio import SeqIO
 
 # Función para calcular la proporción de átomos
 def calcular_proporcion(proteina):
     # Definir las proteínas y sus secuencias
-    proteinas = {
+   proteinas = {
         "Insulina": "MALWMRLLPLLALLALWGPDPAAAFGPGGPLALTLSSSINQEGASQSTSQPLNSRWQRPVEEQELLPCEDPQVP",  # Reemplaza con la secuencia real de insulina
         "Glucagon": "MKSIYFVAGLFVMLVQGSWQRSLQDTEEKSRSFSASQADPLSDPDQMNEDKRHSQGTFTSDYSKYLDSRRAQDFVQWLMNTKRNRNNIAKRHDEFERHAEGTFTSDVSSYLEGQAAKEFIAWLVKGRGRRDFPEEVAIVEELGRRHADGSFSDEMNTILDNLAARDFINWLIQTKITDRK",  # Reemplaza con la secuencia real de glucagón
         "Hemoglobina": "MTQTPYEVIGQERLYQLIDHFYSLVEQDNRINHLFPGDFAETARKQKQFLTQFLGGPDLYTQEHGHPMLRMRHLPFPIDDKAKEAWLENMHTAITHAQLPHGAGDYLYERLRLTANHMVNIEN",  # Reemplaza con la secuencia real de hemoglobina
@@ -86,7 +86,7 @@ def calcular_proporcion(proteina):
     return aa_count
 
 # Interfaz Streamlit
-st.title("Proporción de Aminoacidos en Proteínas")
+st.title("Proporción de Átomos en Proteínas")
 
 # Opción para seleccionar la proteína
 proteina = st.selectbox("Selecciona una proteína", ["Insulina", "Glucagon", "Hemoglobina", "Colageno"])
@@ -99,7 +99,7 @@ if aa_count:
     aminoacidos = list(aa_count.keys())
     cantidades = list(aa_count.values())
 
-  # Graficar la proporción de átomos
+    # Graficar la proporción de átomos
     plt.figure(figsize=(10, 6))
     plt.bar(aminoacidos, cantidades, color='skyblue')
     plt.xlabel("Aminoácidos")
@@ -109,6 +109,3 @@ if aa_count:
     st.pyplot(plt)
 else:
     st.write("No se encontró la secuencia para la proteína seleccionada.")
-#FACTOR B
-
-
