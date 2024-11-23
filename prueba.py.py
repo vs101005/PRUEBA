@@ -113,7 +113,7 @@ import streamlit as st
 from PIL import Image
 
 # Cargar una imagen desde un archivo local
-image = Image.open("path_to_your_image.png")
+image = Image.open("Screenshot 2024-11-22 225804.png")
 
 # Mostrar la imagen en Streamlit
 st.image(image, caption="Imagen de la proteína", use_column_width=True)
