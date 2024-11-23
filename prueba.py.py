@@ -63,12 +63,12 @@ else:
 import matplotlib.pyplot as plt
 
 # Datos de la proporción de átomos de las proteínas
-proteins = 
+proteins = {
     "Insulina": {"C": 258, "H": 384, "O": 114, "N": 64, "S": 6},
     "Glucagón": {"C": 153, "H": 225, "O": 49, "N": 40, "S": 2},
     "Hemoglobina": {"C": 2954, "H": 4664, "O": 832, "N": 780, "S": 8},
     "Colágeno": {"C": 1590, "H": 2515, "O": 435, "N": 380, "S": 6},
-
+}
 
 # Función para graficar
 def plot_atom_proportion(protein_name, atom_counts):
