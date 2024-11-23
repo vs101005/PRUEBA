@@ -1,4 +1,2 @@
 biopython
 streamlit
-matplotlib
-Collections
