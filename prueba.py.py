@@ -17,58 +17,33 @@ from Bio import Entrez, SeqIO
 # Configurar el correo electrónico para el uso de Entrez
 Entrez.email = "a223201128@unison.mx"
 
-# Diccionario que mapea las proteínas con sus IDs en NCBI
-proteinas = {
-    "insulina": "NP_001278826.1",
-    "glucagon": "KAI4036670.1",
-    "hemoglobina": "WMZ92120.1",
-    "colageno": "BAA04809.1"
-}
 
-def obtener_secuencia(proteina_id):
-    """Obtiene la secuencia de aminoácidos de una proteína dado su ID en NCBI."""
-    try:
-        # Descargar datos en formato FASTA desde NCBI
-        handle = Entrez.efetch(db="protein", id=proteina_id, rettype="fasta", retmode="text")
-        record = SeqIO.read(handle, "fasta")
-        handle.close()
-        return record.seq
-    except Exception as e:
-        print(f"Error al obtener la secuencia: {e}")
-        return None
+# Título de la aplicación
+st.title("Obtener Secuencia de Aminoácidos de una Proteína")
 
-def menu_interactivo():
-    """Muestra un menú interactivo para que el usuario seleccione una proteína."""
-    print("Selecciona una proteína para obtener su secuencia de aminoácidos:")
-    for i, proteina in enumerate(proteinas.keys(), start=1):
-        print(f"{i}. {proteina.capitalize()}")
-    
-    # Validar la entrada del usuario
-    while True:
+# Entrada para el ID de la proteína
+id_proteina = st.text_input("Ingresa el ID de la proteína (por ejemplo, NP_001278826.1):")
+
+# Botón para ejecutar la búsqueda
+if st.button("Obtener Secuencia"):
+    if id_proteina:
         try:
-            opcion = int(input("Ingresa el número de tu elección (1-4): "))
-            if 1 <= opcion <= 4:
-                proteina_seleccionada = list(proteinas.keys())[opcion - 1]
-                break
-            else:
-                print("Por favor, selecciona un número entre 1 y 4.")
-        except ValueError:
-            print("Entrada no válida. Ingresa un número entre 1 y 4.")
-    
-    # Obtener la secuencia de la proteína seleccionada
-    proteina_id = proteinas[proteina_seleccionada]
-    print(f"Obteniendo la secuencia de {proteina_seleccionada.capitalize()}...")
-    secuencia = obtener_secuencia(proteina_id)
-    
-    if secuencia:
-        print(f"\nSecuencia de aminoácidos de {proteina_seleccionada.capitalize()}:\n")
-        print(secuencia)
-    else:
-        print("No se pudo obtener la secuencia de aminoácidos.")
+            # Obtener los datos de la proteína en formato FASTA desde NCBI
+            with Entrez.efetch(db="protein", id=id_proteina, rettype="fasta", retmode="text") as handle:
+                record = SeqIO.read(handle, "fasta")
+                secuencia_aminoacidos = record.seq
 
-# Ejecutar el menú interactivo
-if __name__ == "__main__":
-    menu_interactivo()
+                # Mostrar los resultados
+                st.subheader("Secuencia de Aminoácidos:")
+                st.text(secuencia_aminoacidos)
+
+                # Mostrar la longitud de la secuencia
+                st.subheader("Longitud de la Secuencia:")
+                st.write(f"{len(secuencia_aminoacidos)} aminoácidos")
+        except Exception as e:
+            st.error(f"Error al obtener la secuencia: {e}")
+    else:
+        st.warning("Por favor, ingresa un ID de proteína válido.")
 
 
 
