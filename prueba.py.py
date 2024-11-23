@@ -59,6 +59,7 @@ else:
         
 #PROPORCION DE  Aminoacidos
 
+import streamlit as st
 import matplotlib.pyplot as plt
 from collections import Counter
 
