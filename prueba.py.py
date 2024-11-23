@@ -105,7 +105,6 @@ st.pyplot(fig)
 
 #FACTOR B
 
-import streamlit as st
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
