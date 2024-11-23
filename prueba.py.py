@@ -13,7 +13,6 @@ Original file is located at
 import streamlit as st
 from Bio import Entrez, SeqIO
 
-import streamlit as st
 
 # Secuencias de aminoácidos de las proteínas
 proteins = {
@@ -61,46 +60,54 @@ else:
 #PROPORCION DE  ATOMOS
 
 import matplotlib.pyplot as plt
+from collections import Counter
 
-# Datos de la proporción de átomos de las proteínas
-proteins = {
-    "Insulina": {"C": 258, "H": 384, "O": 114, "N": 64, "S": 6},
-    "Glucagón": {"C": 153, "H": 225, "O": 49, "N": 40, "S": 2},
-    "Hemoglobina": {"C": 2954, "H": 4664, "O": 832, "N": 780, "S": 8},
-    "Colágeno": {"C": 1590, "H": 2515, "O": 435, "N": 380, "S": 6},
-}
 
-# Función para graficar
-def plot_atom_proportion(protein_name, atom_counts):
-    atoms = list(atom_counts.keys())
-    counts = list(atom_counts.values())
+# Función para calcular la proporción de átomos
+def calcular_proporcion(proteina):
+    # Definir las proteínas y sus secuencias
+    proteinas = {
+        "Insulina": "MALWMRLLPLLALLALWGPDPAAAFGPGGPLALTLSSSINQEGASQSTSQPLNSRWQRPVEEQELLPCEDPQVP",  # Reemplaza con la secuencia real de insulina
+        "Glucagon": "MKSIYFVAGLFVMLVQGSWQRSLQDTEEKSRSFSASQADPLSDPDQMNEDKRHSQGTFTSDYSKYLDSRRAQDFVQWLMNTKRNRNNIAKRHDEFERHAEGTFTSDVSSYLEGQAAKEFIAWLVKGRGRRDFPEEVAIVEELGRRHADGSFSDEMNTILDNLAARDFINWLIQTKITDRK",  # Reemplaza con la secuencia real de glucagón
+        "Hemoglobina": "MTQTPYEVIGQERLYQLIDHFYSLVEQDNRINHLFPGDFAETARKQKQFLTQFLGGPDLYTQEHGHPMLRMRHLPFPIDDKAKEAWLENMHTAITHAQLPHGAGDYLYERLRLTANHMVNIEN",  # Reemplaza con la secuencia real de hemoglobina
+        "Colageno": "MHPGLWLLLVTLCLTEELAAAGEKSYGKPCGGQDCSGSCQCFPEKGARGRPGPIGIQGPTGPQGFTGSTGLSGLKGERGFPGLLGPYGPKGDKGPMGVPGFLGINGIPGHPGQPGPRGPPGLDGCNGTQGAVGFPGPDGYPGLLGPPGLPGQKGSKGDPVLAPGSFKGMKGDPGLPGLDGITGPQGAPGFPGAVGPAGPPGLQGPPGPPGPLGPDGNMGLGFQGEKGVKGDVGLPGPAGPPPSTGELEFMGFPKGKKGSKGEPGPKGFPGISGPPGFPGLGTTGEKGEKGEKGIPGLPGPRGPMGSEGVQGPPGQQGKKGTLGFPGLNGFQGIEGQKGDIGLPGPDVFIDIDGAVISGNPGDPGVPGLPGLKGDEGIQGLRGPSGVPGLPALSGVPGALGPQGFPGLKGDQGNPGRTTIGAAGLPGRDGLPGPPGPPGPPSPEFETETLHNKESGFPGLRGEQGPKGNLGLKGIKGDSGFCACDGGVPNTGPPGEPGPPGPWGLIGLPGLKGARGDRGSGGAQGPAGAPGLVGPLGPSGPKGKKGEPILSTIQGMPGDRGDSGSQGFRGVIGEPGKDGVPGLPGLPGLPGDGGQGFPGEKGLPGLPGEKGHPGPPGLPGNGLPGLPGPRGLPGDKGKDGLPGQQGLPGSKGITLPCIIPGSYGPSGFPGTPGFPGPKGSRGLPGTPGQPGSSGSKGEPGSPGLVHLPELPGFPGPRGEKGLPGFPGLPGKDGLPGMIGSPGLPGSKGATGDIFGAENGAPGEQGLQGLTGHKGFLGDSGLPGLKGVHGKPGLLGPKGERGSPGTPGQVGQPGTPGSSGPYGIKGKSGLPGAPGFPGISGHPGKKGTRGKKGPPGSIVKKGLPGLKGLPGNPGLVGLKGSPGSPGVAGLPALSGPKGEKGSVGFVGFPGIPGLPGISGTRGLKGIPGSTGKMGPSGRAGTPGEKGDRGNPGPVGIPSPRRPMSNLWLKGDKGSQGSAGSNGFPGPRGDKGEAGRPGPPGLPGAPGLPGIIKGVSGKPGPPGFMGIRGLPGLKGSSGITGFPGMPGESGSQGIRGSPGLPGASGLPGLKGDNGQTVEISGSPGPKGQPGESGFKGTKGRDGLIGNIGFPGNKGEDGKVGVSGDVGLPGAPGFPGVAGMRGEPGLPGSSGHQGAIGPLGSPGLIGPKGFPGFPGLHGLNGLPGTKGTHGTPGPSITGVPGPAGLPGPKGEKGYPGIGIGAPGKPGLRGQKGDRGFPGLQGPAGLPGAPGISLPSLIAGQPGDPGRPGLDGERGRPGPAGPPGPPGPSSNQGDTGDPGFPGIPGFSGLPGELGLKGMRGEPGFMGTPGKVGPPGDPGFPGMKGKAGARGSSGLQGDPGQTPTAEAVQVPPGPLGLPGIDGIPGLTGDPGAQGPVGLQGSKGLPGIPGKDGPSGLPGPPGALGDPGLPGLQGPPGFEGAPGQQGPFGMPGMPGQSMRVGYTLVKHSQSEQVPPCPIGMSQLWVGYSLLFVEGQEKAHNQDLGFAGSCLPRFSTMPFIYCNINEVCHYARRNDKSYWLSTTAPIPMMPVSQTQIPQYISRCSVCEAPSQAIAVHSQDITIPQCPLGWRSLWIGYSFLMHTAAGAEGGGQSLVSPGSCLEDFRATPFIECSGARGTCHYFANKYSFWLTTVEERQQFGELPVSETLKAGQLHTRVSRCQVCMKSL"  # Reemplaza con la secuencia real de colágeno
+    }
+
+    # Obtener la secuencia de la proteína seleccionada
+    secuencia = proteinas.get(proteina)
     
-    fig, ax = plt.subplots()
-    ax.pie(counts, labels=atoms, autopct='%1.1f%%', startangle=90, colors=plt.cm.tab20.colors)
-    ax.set_title(f"Proporción de átomos en {protein_name}")
-    return fig
+    if secuencia is None:
+        return None
 
-# Título
-st.title("Proporción de átomos en proteínas")
+    # Contar los átomos (aminoácidos) presentes en la secuencia
+    aa_count = Counter(secuencia)
+    
+    return aa_count
 
-# Descripción
-st.write("Este programa muestra la proporción de átomos en diferentes proteínas. Selecciona una proteína para ver su gráfica.")
+# Interfaz Streamlit
+st.title("Proporción de Átomos en Proteínas")
 
-# Selección de proteína
-selected_protein = st.selectbox("Selecciona una proteína:", list(proteins.keys()))
+# Opción para seleccionar la proteína
+proteina = st.selectbox("Selecciona una proteína", ["Insulina", "Glucagon", "Hemoglobina", "Colageno"])
 
-# Obtener datos de la proteína seleccionada
-atom_data = proteins[selected_protein]
+# Calcular la proporción de átomos
+aa_count = calcular_proporcion(proteina)
 
-# Mostrar los datos en una tabla
-st.subheader(f"Datos de {selected_protein}")
-st.write(atom_data)
+if aa_count:
+    # Convertir a listas para graficar
+    aminoacidos = list(aa_count.keys())
+    cantidades = list(aa_count.values())
 
-# Generar la gráfica
-fig = plot_atom_proportion(selected_protein, atom_data)
-
-# Mostrar la gráfica
-st.pyplot(fig)
+    # Graficar la proporción de átomos
+    plt.figure(figsize=(10, 6))
+    plt.bar(aminoacidos, cantidades, color='skyblue')
+    plt.xlabel("Aminoácidos")
+    plt.ylabel("Cantidad")
+    plt.title(f"Proporción de Átomos en la Proteína: {proteina}")
+    plt.xticks(rotation=45)
+    st.pyplot(plt)
+else:
+    st.write("No se encontró la secuencia para la proteína seleccionada.")
 
 
 
