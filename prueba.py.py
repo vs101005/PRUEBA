@@ -75,7 +75,7 @@ def calcular_proporcion(proteina):
     }
 
     # Obtener la secuencia de la proteína seleccionada
-    secuencia = proteinas.get(proteina)
+    secuencia = proteinas.get(proteinas)
     
     if secuencia is None:
         return None
