@@ -13,6 +13,7 @@ Original file is located at
 import streamlit as st
 from Bio import Entrez, SeqIO
 
+import streamlit as st
 
 # Secuencias de aminoácidos de las proteínas
 proteins = {
@@ -33,7 +34,6 @@ proteins = {
 # Título de la aplicación
 st.title("Secuencias de Aminoácidos de Proteínas")
 
-# Descripción
 
 
 # Selector de proteínas
@@ -44,7 +44,7 @@ if selected_protein:
     st.subheader(f"Secuencia de {selected_protein}:")
     sequence = proteins[selected_protein]
     st.code(sequence, language="plain")
-    
+
     # Opcional: mostrar longitud de la secuencia
     st.write(f"**Longitud de la secuencia:** {len(sequence)} aminoácidos")
 
@@ -56,7 +56,7 @@ if selected_protein:
         mime="text/plain",
     )
 else:
-    st.info("Por favor, selecciona una proteína para ver la secuencia.")
+    st.info("Selecciona una proteína para ver la secuencia.")
         
 #PROPORCION DE  ATOMOS
 
