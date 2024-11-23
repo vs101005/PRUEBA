@@ -103,6 +103,7 @@ fig = plot_atom_proportion(selected_protein, atom_data)
 st.pyplot(fig)
 
 
+
 #FACTOR B
 
 
