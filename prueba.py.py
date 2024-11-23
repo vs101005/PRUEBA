@@ -87,7 +87,7 @@ def calcular_proporcion(proteina):
 st.title("Proporción de Aminoacidos en Proteínas")
 
 # Opción para seleccionar la proteína
-
+proteina = st.selectbox("Selecciona una proteína", ["Insulina", "Glucagon", "Hemoglobina", "Colageno"])
 
 # Calcular la proporción de átomos
 aa_count = calcular_proporcion(proteina)
