@@ -8,8 +8,7 @@ Original file is located at
 """
 
 # Install streamlit library
-!pip install streamlit
-!pip install biopython
+
 # Then import the library as usual in the script.
 import streamlit as st
 from Bio import Entrez, SeqIO
