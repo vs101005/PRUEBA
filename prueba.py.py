@@ -105,88 +105,53 @@ st.pyplot(fig)
 
 #FACTOR B
 
-import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+from Bio import PDB
+import streamlit as st
 
-# Secuencias de aminoácidos de las proteínas
-proteins = {
-    "Insulina": (
-        "MALWMRLLPLLALLALWGPDPAAA"
-        "FGPGGPLALTLSSSINQEGASQSTSQP"
-        "LNSRWQRPVEEQELLPCEDPQVP"
-    ),
-    "Glucagón": ("KSIYFVAGLFVMLVQGSWQRSLQDTEEKSRSFSASQADPLSDPDQMNEDKRHSQGTFTSDYSKYLDSRRAQDFVQWLMNTKRNRNNIAKRHDEFERHAEGTFTSDVSSYLEGQAAKEFIAWLVKGRGRRDFPEEVAIVEELGRRHADGSFSDEMNTILDNLAARDFINWLIQTKITDRK"),
-    
-    "Hemoglobina": (
-        "MTQTPYEVIGQERLYQLIDHFYSLVEQDNRINHLFPGDFAETARKQKQFLTQFLGGPDLYTQEHGHPMLRMRHLPFPIDDKAKEAWLENMHTAITHAQLPHGAGDYLYERLRLTANHMVNIEN"
-    ),
-    "Colágeno (fragmento)": (
-        "MHPGLWLLLVTLCLTEELAAAGEKSYGKPCGGQDCSGSCQCFPEKGARGRPGPIGIQGPTGPQGFTGSTGLSGLKGERGFPGLLGPYGPKGDKGPMGVPGFLGINGIPGHPGQPGPRGPPGLDGCNGTQGAVGFPGPDGYPGLLGPPGLPGQKGSKGDPVLAPGSFKGMKGDPGLPGLDGITGPQGAPGFPGAVGPAGPPGLQGPPGPPGPLGPDGNMGLGFQGEKGVKGDVGLPGPAGPPPSTGELEFMGFPKGKKGSKGEPGPKGFPGISGPPGFPGLGTTGEKGEKGEKGIPGLPGPRGPMGSEGVQGPPGQQGKKGTLGFPGLNGFQGIEGQKGDIGLPGPDVFIDIDGAVISGNPGDPGVPGLPGLKGDEGIQGLRGPSGVPGLPALSGVPGALGPQGFPGLKGDQGNPGRTTIGAAGLPGRDGLPGPPGPPGPPSPEFETETLHNKESGFPGLRGEQGPKGNLGLKGIKGDSGFCACDGGVPNTGPPGEPGPPGPWGLIGLPGLKGARGDRGSGGAQGPAGAPGLVGPLGPSGPKGKKGEPILSTIQGMPGDRGDSGSQGFRGVIGEPGKDGVPGLPGLPGLPGDGGQGFPGEKGLPGLPGEKGHPGPPGLPGNGLPGLPGPRGLPGDKGKDGLPGQQGLPGSKGITLPCIIPGSYGPSGFPGTPGFPGPKGSRGLPGTPGQPGSSGSKGEPGSPGLVHLPELPGFPGPRGEKGLPGFPGLPGKDGLPGMIGSPGLPGSKGATGDIFGAENGAPGEQGLQGLTGHKGFLGDSGLPGLKGVHGKPGLLGPKGERGSPGTPGQVGQPGTPGSSGPYGIKGKSGLPGAPGFPGISGHPGKKGTRGKKGPPGSIVKKGLPGLKGLPGNPGLVGLKGSPGSPGVAGLPALSGPKGEKGSVGFVGFPGIPGLPGISGTRGLKGIPGSTGKMGPSGRAGTPGEKGDRGNPGPVGIPSPRRPMSNLWLKGDKGSQGSAGSNGFPGPRGDKGEAGRPGPPGLPGAPGLPGIIKGVSGKPGPPGFMGIRGLPGLKGSSGITGFPGMPGESGSQGIRGSPGLPGASGLPGLKGDNGQTVEISGSPGPKGQPGESGFKGTKGRDGLIGNIGFPGNKGEDGKVGVSGDVGLPGAPGFPGVAGMRGEPGLPGSSGHQGAIGPLGSPGLIGPKGFPGFPGLHGLNGLPGTKGTHGTPGPSITGVPGPAGLPGPKGEKGYPGIGIGAPGKPGLRGQKGDRGFPGLQGPAGLPGAPGISLPSLIAGQPGDPGRPGLDGERGRPGPAGPPGPPGPSSNQGDTGDPGFPGIPGFSGLPGELGLKGMRGEPGFMGTPGKVGPPGDPGFPGMKGKAGARGSSGLQGDPGQTPTAEAVQVPPGPLGLPGIDGIPGLTGDPGAQGPVGLQGSKGLPGIPGKDGPSGLPGPPGALGDPGLPGLQGPPGFEGAPGQQGPFGMPGMPGQSMRVGYTLVKHSQSEQVPPCPIGMSQLWVGYSLLFVEGQEKAHNQDLGFAGSCLPRFSTMPFIYCNINEVCHYARRNDKSYWLSTTAPIPMMPVSQTQIPQYISRCSVCEAPSQAIAVHSQDITIPQCPLGWRSLWIGYSFLMHTAAGAEGGGQSLVSPGSCLEDFRATPFIECSGARGTCHYFANKYSFWLTTVEERQQFGELPVSETLKAGQLHTRVSRCQVCMKSL"
-    "
-    ),
+# Función para obtener B-factors de una proteína
+def obtener_bfactor(proteina_pdb):
+    # Cargar la estructura desde el archivo PDB
+    parser = PDB.PDBParser()
+    structure = parser.get_structure("protein", proteina_pdb)
+
+    b_factors = []
+
+    # Iterar sobre todos los átomos en la estructura para obtener sus B-factors
+    for model in structure:
+        for chain in model:
+            for residue in chain:
+                for atom in residue:
+                    b_factors.append(atom.get_bfactor())
+
+    return b_factors
+
+# Crear un gráfico de líneas del B-factor
+def graficar_bfactor(b_factors, proteina_nombre):
+    plt.figure(figsize=(10, 6))
+    plt.plot(b_factors, marker='o', linestyle='-', color='b')
+    plt.title(f'B-factor de {proteina_nombre}')
+    plt.xlabel('Átomo')
+    plt.ylabel('B-factor')
+    plt.grid(True)
+    plt.show()
+
+# Proteínas en formato PDB (deberás tener estos archivos en tu directorio o en una URL accesible)
+proteinas = {
+    'Insulina': '1ZEI.pdb',
+    'Glucagon': '7LCK.pdb',
+    'Hemoglobina': '1SHR.pdb',
+    'Colágeno': '5NBI.pdb'
 }
 
-# Función para generar coordenadas 3D a partir de la secuencia de aminoácidos
-def generate_3d_coordinates(sequence):
-    # Generamos coordenadas simples en 3D a partir de la longitud de la secuencia
-    # Usamos un enfoque simple, distribuyendo los aminoácidos a lo largo de una línea 3D
-    x = np.arange(len(sequence))
-    y = np.sin(x) * 10  # Para variar en el eje Y
-    z = np.cos(x) * 10  # Para variar en el eje Z
-    return x, y, z
+# Interfaz interactiva con Streamlit
+st.title('Cálculo y Gráfica de B-factor de Proteínas')
+proteina_seleccionada = st.selectbox('Selecciona una proteína:', list(proteinas.keys()))
 
-# Título de la aplicación
-st.title("Visualización de Proteínas")
+# Cargar el archivo correspondiente a la proteína seleccionada
+proteina_pdb = proteinas[proteina_seleccionada]
 
-# Descripción
-st.write("""
-    Selecciona una proteína para ver su secuencia y obtener un gráfico de líneas
-    y un gráfico 3D de la secuencia.
-    Las proteínas disponibles son:
-    - Insulina
-    - Glucagón
-    - Hemoglobina (subunidad beta)
-    - Colágeno (fragmento)
-""")
-
-# Selector de proteínas
-selected_protein = st.selectbox("Selecciona una proteína:", list(proteins.keys()))
-
-# Obtener la secuencia de la proteína seleccionada
-if selected_protein:
-    sequence = proteins[selected_protein]
-    st.subheader(f"Secuencia de {selected_protein}:")
-    st.text(sequence)
-
-    # Graficar la secuencia de aminoácidos en un gráfico de líneas (2D)
-    st.subheader("Gráfico de líneas de la secuencia de aminoácidos")
-
-    # Asignamos números a los aminoácidos (para simplificación)
-    amino_acids = list(sequence)
-    amino_acid_numbers = np.arange(len(sequence))
-
-    plt.figure(figsize=(8, 4))
-    plt.plot(amino_acid_numbers, amino_acid_numbers, label='Secuencia de Aminoácidos', marker='o')
-    plt.title(f"Secuencia de {selected_protein} - Gráfico de líneas")
-    plt.xlabel("Posición en la secuencia")
-    plt.ylabel("Número de aminoácidos")
-    plt.grid(True)
-    st.pyplot(plt)
-
-    # Generar gráfico 3D de la secuencia
-    st.subheader("Gráfico 3D de la secuencia de aminoácidos")
-    x, y, z = generate_3d_coordinates(sequence)
-
-    fig = plt.figure(figsize=(8, 6))
-    ax = fig.add_subplot(111, projection='3d')
-    ax.plot(x, y, z, label="Secuencia de Aminoácidos", marker='o', color='b')
-
-    ax.set_title(f"Secuencia 3D de {selected_protein}")
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_zlabel('Z')
-    st.pyplot(fig)
-
-else:
-    st.info("Por favor, selecciona una proteína para ver la secuencia y los gráficos.")
-
+# Procesar el B-factor y generar la gráfica
+if st.button('Generar Gráfica'):
+    b_factors = obtener_bfactor(proteina_pdb)
+    graficar_bfactor(b_factors, proteina_seleccionada)
