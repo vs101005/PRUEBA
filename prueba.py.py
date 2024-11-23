@@ -42,3 +42,49 @@ if st.button("Obtener Secuencia"):
             st.error(f"Error al obtener la secuencia: {e}")
     else:
         st.warning("Por favor, ingresa un ID de proteína válido.")
+
+
+#PROPORCION DE  ATOMOS
+
+import matplotlib.pyplot as plt
+
+# Datos de la proporción de átomos de las proteínas
+proteins = {
+    "Insulina": {"C": 258, "H": 384, "O": 114, "N": 64, "S": 6},
+    "Glucagón": {"C": 153, "H": 225, "O": 49, "N": 40, "S": 2},
+    "Hemoglobina": {"C": 2954, "H": 4664, "O": 832, "N": 780, "S": 8},
+    "Colágeno": {"C": 1590, "H": 2515, "O": 435, "N": 380, "S": 6},
+}
+
+# Función para graficar
+def plot_atom_proportion(protein_name, atom_counts):
+    atoms = list(atom_counts.keys())
+    counts = list(atom_counts.values())
+    
+    fig, ax = plt.subplots()
+    ax.pie(counts, labels=atoms, autopct='%1.1f%%', startangle=90, colors=plt.cm.tab20.colors)
+    ax.set_title(f"Proporción de átomos en {protein_name}")
+    return fig
+
+# Título
+st.title("Proporción de átomos en proteínas")
+
+# Descripción
+st.write("Este programa muestra la proporción de átomos en diferentes proteínas. Selecciona una proteína para ver su gráfica.")
+
+# Selección de proteína
+selected_protein = st.selectbox("Selecciona una proteína:", list(proteins.keys()))
+
+# Obtener datos de la proteína seleccionada
+atom_data = proteins[selected_protein]
+
+# Mostrar los datos en una tabla
+st.subheader(f"Datos de {selected_protein}")
+st.write(atom_data)
+
+# Generar la gráfica
+fig = plot_atom_proportion(selected_protein, atom_data)
+
+# Mostrar la gráfica
+st.pyplot(fig)
+
