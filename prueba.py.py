@@ -38,7 +38,7 @@ st.title("Secuencias de Aminoácidos de Proteínas")
 
 # Descripción
 
-)
+
 
 # Selector de proteínas
 selected_protein = st.selectbox("Selecciona una proteína:", list(proteins.keys()))
