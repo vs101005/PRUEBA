@@ -37,15 +37,7 @@ proteins = {
 st.title("Secuencias de Aminoácidos de Proteínas")
 
 # Descripción
-st.write(
-    """
-    Selecciona una proteína para obtener su secuencia de aminoácidos.
-    Las proteínas disponibles son:
-    - Insulina
-    - Glucagón
-    - Hemoglobina (subunidad beta)
-    - Colágeno (fragmento)
-    """
+
 )
 
 # Selector de proteínas
