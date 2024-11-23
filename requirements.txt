@@ -1,6 +1,2 @@
 biopython
-biopandas
-py3Dmol
-Bio
-mathplotlib
-plotly
+streamlit
