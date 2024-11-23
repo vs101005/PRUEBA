@@ -99,24 +99,16 @@ if aa_count:
     aminoacidos = list(aa_count.keys())
     cantidades = list(aa_count.values())
 
-  grafico = st.selectbox("Elige el tipo de gráfico", ["Barras", "Pastel"])
-
-# Crear el gráfico según la opción seleccionada
-plt.figure(figsize=(10, 6))
-
-if grafico == "Barras":
+  # Graficar la proporción de átomos
+    plt.figure(figsize=(10, 6))
     plt.bar(aminoacidos, cantidades, color='skyblue')
     plt.xlabel("Aminoácidos")
     plt.ylabel("Cantidad")
     plt.title(f"Proporción de Átomos en la Proteína: {proteina}")
-elif grafico == "Pastel":
-    plt.pie(cantidades, labels=aminoacidos, autopct='%1.1f%%', colors=plt.cm.Paired.colors)
-    plt.title(f"Composición en Porcentaje de Átomos: {proteina}")
-
-# Mostrar el gráfico
-st.pyplot(plt)
-
-
+    plt.xticks(rotation=45)
+    st.pyplot(plt)
+else:
+    st.write("No se encontró la secuencia para la proteína seleccionada.")
 #FACTOR B
 
 
