@@ -14,8 +14,6 @@ import streamlit as st
 from Bio import Entrez, SeqIO
 
 
-import streamlit as st
-
 # Secuencias de aminoácidos de las proteínas
 proteins = {
     "Insulina": (
@@ -36,16 +34,7 @@ proteins = {
 st.title("Secuencias de Aminoácidos de Proteínas")
 
 # Descripción
-st.write(
-    """
-    Selecciona una proteína para obtener su secuencia de aminoácidos.
-    Las proteínas disponibles son:
-    - Insulina
-    - Glucagón
-    - Hemoglobina (subunidad beta)
-    - Colágeno (fragmento)
-    """
-)
+
 
 # Selector de proteínas
 selected_protein = st.selectbox("Selecciona una proteína:", list(proteins.keys()))
