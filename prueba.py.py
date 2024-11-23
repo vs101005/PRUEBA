@@ -14,36 +14,60 @@ import streamlit as st
 from Bio import Entrez, SeqIO
 
 
-# Configurar el correo electrónico para el uso de Entrez
-Entrez.email = "a223201128@unison.mx"
+import streamlit as st
 
+# Secuencias de aminoácidos de las proteínas
+proteins = {
+    "Insulina": (
+        "MALWMRLLPLLALLALWGPDPAAA"
+        "FGPGGPLALTLSSSINQEGASQSTSQP"
+        "LNSRWQRPVEEQELLPCEDPQVP"
+    ),
+    "Glucagón": "MKSIYFVAGLFVMLVQGSWQRSLQDTEEKSRSFSASQADPLSDPDQMNEDKRHSQGTFTSDYSKYLDSRRAQDFVQWLMNTKRNRNNIAKRHDEFERHAEGTFTSDVSSYLEGQAAKEFIAWLVKGRGRRDFPEEVAIVEELGRRHADGSFSDEMNTILDNLAARDFINWLIQTKITDRK",
+    "Hemoglobina (subunidad beta)": (
+        "MTQTPYEVIGQERLYQLIDHFYSLVEQDNRINHLFPGDFAETARKQKQFLTQFLGGPDLYTQEHGHPMLRMRHLPFPIDDKAKEAWLENMHTAITHAQLPHGAGDYLYERLRLTANHMVNIEN"
+    ),
+    "Colágeno (fragmento)": (
+        "MHPGLWLLLVTLCLTEELAAAGEKSYGKPCGGQDCSGSCQCFPEKGARGRPGPIGIQGPTGPQGFTGSTGLSGLKGERGFPGLLGPYGPKGDKGPMGVPGFLGINGIPGHPGQPGPRGPPGLDGCNGTQGAVGFPGPDGYPGLLGPPGLPGQKGSKGDPVLAPGSFKGMKGDPGLPGLDGITGPQGAPGFPGAVGPAGPPGLQGPPGPPGPLGPDGNMGLGFQGEKGVKGDVGLPGPAGPPPSTGELEFMGFPKGKKGSKGEPGPKGFPGISGPPGFPGLGTTGEKGEKGEKGIPGLPGPRGPMGSEGVQGPPGQQGKKGTLGFPGLNGFQGIEGQKGDIGLPGPDVFIDIDGAVISGNPGDPGVPGLPGLKGDEGIQGLRGPSGVPGLPALSGVPGALGPQGFPGLKGDQGNPGRTTIGAAGLPGRDGLPGPPGPPGPPSPEFETETLHNKESGFPGLRGEQGPKGNLGLKGIKGDSGFCACDGGVPNTGPPGEPGPPGPWGLIGLPGLKGARGDRGSGGAQGPAGAPGLVGPLGPSGPKGKKGEPILSTIQGMPGDRGDSGSQGFRGVIGEPGKDGVPGLPGLPGLPGDGGQGFPGEKGLPGLPGEKGHPGPPGLPGNGLPGLPGPRGLPGDKGKDGLPGQQGLPGSKGITLPCIIPGSYGPSGFPGTPGFPGPKGSRGLPGTPGQPGSSGSKGEPGSPGLVHLPELPGFPGPRGEKGLPGFPGLPGKDGLPGMIGSPGLPGSKGATGDIFGAENGAPGEQGLQGLTGHKGFLGDSGLPGLKGVHGKPGLLGPKGERGSPGTPGQVGQPGTPGSSGPYGIKGKSGLPGAPGFPGISGHPGKKGTRGKKGPPGSIVKKGLPGLKGLPGNPGLVGLKGSPGSPGVAGLPALSGPKGEKGSVGFVGFPGIPGLPGISGTRGLKGIPGSTGKMGPSGRAGTPGEKGDRGNPGPVGIPSPRRPMSNLWLKGDKGSQGSAGSNGFPGPRGDKGEAGRPGPPGLPGAPGLPGIIKGVSGKPGPPGFMGIRGLPGLKGSSGITGFPGMPGESGSQGIRGSPGLPGASGLPGLKGDNGQTVEISGSPGPKGQPGESGFKGTKGRDGLIGNIGFPGNKGEDGKVGVSGDVGLPGAPGFPGVAGMRGEPGLPGSSGHQGAIGPLGSPGLIGPKGFPGFPGLHGLNGLPGTKGTHGTPGPSITGVPGPAGLPGPKGEKGYPGIGIGAPGKPGLRGQKGDRGFPGLQGPAGLPGAPGISLPSLIAGQPGDPGRPGLDGERGRPGPAGPPGPPGPSSNQGDTGDPGFPGIPGFSGLPGELGLKGMRGEPGFMGTPGKVGPPGDPGFPGMKGKAGARGSSGLQGDPGQTPTAEAVQVPPGPLGLPGIDGIPGLTGDPGAQGPVGLQGSKGLPGIPGKDGPSGLPGPPGALGDPGLPGLQGPPGFEGAPGQQGPFGMPGMPGQSMRVGYTLVKHSQSEQVPPCPIGMSQLWVGYSLLFVEGQEKAHNQDLGFAGSCLPRFSTMPFIYCNINEVCHYARRNDKSYWLSTTAPIPMMPVSQTQIPQYISRCSVCEAPSQAIAVHSQDITIPQCPLGWRSLWIGYSFLMHTAAGAEGGGQSLVSPGSCLEDFRATPFIECSGARGTCHYFANKYSFWLTTVEERQQFGELPVSETLKAGQLHTRVSRCQVCMKSL"
+    ),
+}
 
 # Título de la aplicación
-st.title("Obtener Secuencia de Aminoácidos de una Proteína")
+st.title("Secuencias de Aminoácidos de Proteínas")
 
-# Entrada para el ID de la proteína
-id_proteina = st.text_input("Ingresa el ID de la proteína (por ejemplo, NP_001278826.1):")
+# Descripción
+st.write(
+    """
+    Selecciona una proteína para obtener su secuencia de aminoácidos.
+    Las proteínas disponibles son:
+    - Insulina
+    - Glucagón
+    - Hemoglobina (subunidad beta)
+    - Colágeno (fragmento)
+    """
+)
 
-# Botón para ejecutar la búsqueda
-if st.button("Obtener Secuencia"):
-    if id_proteina:
-        try:
-            # Obtener los datos de la proteína en formato FASTA desde NCBI
-            with Entrez.efetch(db="protein", id=id_proteina, rettype="fasta", retmode="text") as handle:
-                record = SeqIO.read(handle, "fasta")
-                secuencia_aminoacidos = record.seq
+# Selector de proteínas
+selected_protein = st.selectbox("Selecciona una proteína:", list(proteins.keys()))
 
-                # Mostrar los resultados
-                st.subheader("Secuencia de Aminoácidos:")
-                st.text(secuencia_aminoacidos)
+# Mostrar la secuencia de aminoácidos
+if selected_protein:
+    st.subheader(f"Secuencia de {selected_protein}:")
+    sequence = proteins[selected_protein]
+    st.code(sequence, language="plain")
+    
+    # Opcional: mostrar longitud de la secuencia
+    st.write(f"**Longitud de la secuencia:** {len(sequence)} aminoácidos")
 
-                # Mostrar la longitud de la secuencia
-                st.subheader("Longitud de la Secuencia:")
-                st.write(f"{len(secuencia_aminoacidos)} aminoácidos")
-        except Exception as e:
-            st.error(f"Error al obtener la secuencia: {e}")
-    else:
-        st.warning("Por favor, ingresa un ID de proteína válido.")
+    # Botón para copiar la secuencia
+    st.download_button(
+        label="Descargar Secuencia",
+        data=sequence,
+        file_name=f"{selected_protein}_secuencia.txt",
+        mime="text/plain",
+    )
+else:
+    st.info("Por favor, selecciona una proteína para ver la secuencia.")
         
 #PROPORCION DE  ATOMOS
 
