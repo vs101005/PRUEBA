@@ -107,3 +107,11 @@ if aa_count:
     st.pyplot(plt)
 else:
     st.write("No se encontró la secuencia para la proteína seleccionada.")
+
+#imagen
+
+# URL de la imagen
+image_url = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fvitae.ucv.ve%2F%3Fmodule%3Darticulo%26rv%3D177%26n%3D5600%26m%3D2%26e%3D5613&psig=AOvVaw2tuHV_tIQj9JU5J3XbC0JB&ust=1732427766235000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCLDGvb7i8YkDFQAAAAAdAAAAABAE"
+
+# Mostrar la imagen desde la URL
+st.image(image_url, caption="Imagen de la proteína desde URL", use_column_width=True)
