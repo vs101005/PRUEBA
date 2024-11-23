@@ -102,3 +102,92 @@ fig = plot_atom_proportion(selected_protein, atom_data)
 # Mostrar la gráfica
 st.pyplot(fig)
 
+
+#FACTOR B
+
+import streamlit as st
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+
+# Secuencias de aminoácidos de las proteínas
+proteins = {
+    "Insulina": (
+        "MALWMRLLPLLALLALWGPDPAAA"
+        "FGPGGPLALTLSSSINQEGASQSTSQP"
+        "LNSRWQRPVEEQELLPCEDPQVP"
+    ),
+    "Glucagón": ("KSIYFVAGLFVMLVQGSWQRSLQDTEEKSRSFSASQADPLSDPDQMNEDKRHSQGTFTSDYSKYLDSRRAQDFVQWLMNTKRNRNNIAKRHDEFERHAEGTFTSDVSSYLEGQAAKEFIAWLVKGRGRRDFPEEVAIVEELGRRHADGSFSDEMNTILDNLAARDFINWLIQTKITDRK"),
+    
+    "Hemoglobina": (
+        "MTQTPYEVIGQERLYQLIDHFYSLVEQDNRINHLFPGDFAETARKQKQFLTQFLGGPDLYTQEHGHPMLRMRHLPFPIDDKAKEAWLENMHTAITHAQLPHGAGDYLYERLRLTANHMVNIEN"
+    ),
+    "Colágeno (fragmento)": (
+        "MHPGLWLLLVTLCLTEELAAAGEKSYGKPCGGQDCSGSCQCFPEKGARGRPGPIGIQGPTGPQGFTGSTGLSGLKGERGFPGLLGPYGPKGDKGPMGVPGFLGINGIPGHPGQPGPRGPPGLDGCNGTQGAVGFPGPDGYPGLLGPPGLPGQKGSKGDPVLAPGSFKGMKGDPGLPGLDGITGPQGAPGFPGAVGPAGPPGLQGPPGPPGPLGPDGNMGLGFQGEKGVKGDVGLPGPAGPPPSTGELEFMGFPKGKKGSKGEPGPKGFPGISGPPGFPGLGTTGEKGEKGEKGIPGLPGPRGPMGSEGVQGPPGQQGKKGTLGFPGLNGFQGIEGQKGDIGLPGPDVFIDIDGAVISGNPGDPGVPGLPGLKGDEGIQGLRGPSGVPGLPALSGVPGALGPQGFPGLKGDQGNPGRTTIGAAGLPGRDGLPGPPGPPGPPSPEFETETLHNKESGFPGLRGEQGPKGNLGLKGIKGDSGFCACDGGVPNTGPPGEPGPPGPWGLIGLPGLKGARGDRGSGGAQGPAGAPGLVGPLGPSGPKGKKGEPILSTIQGMPGDRGDSGSQGFRGVIGEPGKDGVPGLPGLPGLPGDGGQGFPGEKGLPGLPGEKGHPGPPGLPGNGLPGLPGPRGLPGDKGKDGLPGQQGLPGSKGITLPCIIPGSYGPSGFPGTPGFPGPKGSRGLPGTPGQPGSSGSKGEPGSPGLVHLPELPGFPGPRGEKGLPGFPGLPGKDGLPGMIGSPGLPGSKGATGDIFGAENGAPGEQGLQGLTGHKGFLGDSGLPGLKGVHGKPGLLGPKGERGSPGTPGQVGQPGTPGSSGPYGIKGKSGLPGAPGFPGISGHPGKKGTRGKKGPPGSIVKKGLPGLKGLPGNPGLVGLKGSPGSPGVAGLPALSGPKGEKGSVGFVGFPGIPGLPGISGTRGLKGIPGSTGKMGPSGRAGTPGEKGDRGNPGPVGIPSPRRPMSNLWLKGDKGSQGSAGSNGFPGPRGDKGEAGRPGPPGLPGAPGLPGIIKGVSGKPGPPGFMGIRGLPGLKGSSGITGFPGMPGESGSQGIRGSPGLPGASGLPGLKGDNGQTVEISGSPGPKGQPGESGFKGTKGRDGLIGNIGFPGNKGEDGKVGVSGDVGLPGAPGFPGVAGMRGEPGLPGSSGHQGAIGPLGSPGLIGPKGFPGFPGLHGLNGLPGTKGTHGTPGPSITGVPGPAGLPGPKGEKGYPGIGIGAPGKPGLRGQKGDRGFPGLQGPAGLPGAPGISLPSLIAGQPGDPGRPGLDGERGRPGPAGPPGPPGPSSNQGDTGDPGFPGIPGFSGLPGELGLKGMRGEPGFMGTPGKVGPPGDPGFPGMKGKAGARGSSGLQGDPGQTPTAEAVQVPPGPLGLPGIDGIPGLTGDPGAQGPVGLQGSKGLPGIPGKDGPSGLPGPPGALGDPGLPGLQGPPGFEGAPGQQGPFGMPGMPGQSMRVGYTLVKHSQSEQVPPCPIGMSQLWVGYSLLFVEGQEKAHNQDLGFAGSCLPRFSTMPFIYCNINEVCHYARRNDKSYWLSTTAPIPMMPVSQTQIPQYISRCSVCEAPSQAIAVHSQDITIPQCPLGWRSLWIGYSFLMHTAAGAEGGGQSLVSPGSCLEDFRATPFIECSGARGTCHYFANKYSFWLTTVEERQQFGELPVSETLKAGQLHTRVSRCQVCMKSL"
+    "
+    ),
+}
+
+# Función para generar coordenadas 3D a partir de la secuencia de aminoácidos
+def generate_3d_coordinates(sequence):
+    # Generamos coordenadas simples en 3D a partir de la longitud de la secuencia
+    # Usamos un enfoque simple, distribuyendo los aminoácidos a lo largo de una línea 3D
+    x = np.arange(len(sequence))
+    y = np.sin(x) * 10  # Para variar en el eje Y
+    z = np.cos(x) * 10  # Para variar en el eje Z
+    return x, y, z
+
+# Título de la aplicación
+st.title("Visualización de Proteínas")
+
+# Descripción
+st.write("""
+    Selecciona una proteína para ver su secuencia y obtener un gráfico de líneas
+    y un gráfico 3D de la secuencia.
+    Las proteínas disponibles son:
+    - Insulina
+    - Glucagón
+    - Hemoglobina (subunidad beta)
+    - Colágeno (fragmento)
+""")
+
+# Selector de proteínas
+selected_protein = st.selectbox("Selecciona una proteína:", list(proteins.keys()))
+
+# Obtener la secuencia de la proteína seleccionada
+if selected_protein:
+    sequence = proteins[selected_protein]
+    st.subheader(f"Secuencia de {selected_protein}:")
+    st.text(sequence)
+
+    # Graficar la secuencia de aminoácidos en un gráfico de líneas (2D)
+    st.subheader("Gráfico de líneas de la secuencia de aminoácidos")
+
+    # Asignamos números a los aminoácidos (para simplificación)
+    amino_acids = list(sequence)
+    amino_acid_numbers = np.arange(len(sequence))
+
+    plt.figure(figsize=(8, 4))
+    plt.plot(amino_acid_numbers, amino_acid_numbers, label='Secuencia de Aminoácidos', marker='o')
+    plt.title(f"Secuencia de {selected_protein} - Gráfico de líneas")
+    plt.xlabel("Posición en la secuencia")
+    plt.ylabel("Número de aminoácidos")
+    plt.grid(True)
+    st.pyplot(plt)
+
+    # Generar gráfico 3D de la secuencia
+    st.subheader("Gráfico 3D de la secuencia de aminoácidos")
+    x, y, z = generate_3d_coordinates(sequence)
+
+    fig = plt.figure(figsize=(8, 6))
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot(x, y, z, label="Secuencia de Aminoácidos", marker='o', color='b')
+
+    ax.set_title(f"Secuencia 3D de {selected_protein}")
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    st.pyplot(fig)
+
+else:
+    st.info("Por favor, selecciona una proteína para ver la secuencia y los gráficos.")
+
