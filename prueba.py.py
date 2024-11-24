@@ -113,41 +113,22 @@ else:
 import streamlit as st
 import py3Dmol
 
-# Datos de proteínas en formato PDB
-proteins_data = {
-    "Insulina": """
-HEADER    INSULIN
-ATOM      1  N   ASN A   1      14.456  20.331   5.482  1.00 40.00           N  
-ATOM      2  CA  ASN A   1      15.913  20.276   5.389  1.00 40.00           C  
-ATOM      3  C   ASN A   1      16.421  21.708   5.492  1.00 40.00           C  
-TER
-END
-""",
-    "Glucagón": """
-HEADER    GLUCAGON
-ATOM      1  N   HIS A   1      12.456  19.331   4.482  1.00 50.00           N  
-ATOM      2  CA  HIS A   1      13.913  19.276   4.389  1.00 50.00           C  
-ATOM      3  C   HIS A   1      14.421  20.708   4.492  1.00 50.00           C  
-TER
-END
-""",
-    "Hemoglobina": """
-HEADER    HEMOGLOBIN
-ATOM      1  N   GLY A   1      10.456  18.331   3.482  1.00 60.00           N  
-ATOM      2  CA  GLY A   1      11.913  18.276   3.389  1.00 60.00           C  
-ATOM      3  C   GLY A   1      12.421  19.708   3.492  1.00 60.00           C  
-TER
-END
-""",
-    "Colágeno": """
-HEADER    COLLAGEN
-ATOM      1  N   PRO A   1       9.456  17.331   2.482  1.00 70.00           N  
-ATOM      2  CA  PRO A   1      10.913  17.276   2.389  1.00 70.00           C  
-ATOM      3  C   PRO A   1      11.421  18.708   2.492  1.00 70.00           C  
-TER
-END
-"""
+# Ruta de los archivos PDB de las proteínas (asegurate de que las rutas sean correctas)
+proteins_files = {
+    "Insulina": "1zei.pdb",
+    "Glucagón": "7lck.pdb",
+    "Hemoglobina": "1shr.pdb",
+    "Colágeno": "5nb1.pdb"
 }
+
+# Función para leer el archivo PDB
+def load_pdb_file(file_path):
+    try:
+        with open(file_path, "r") as file:
+            return file.read()
+    except Exception as e:
+        st.error(f"Error al cargar el archivo {file_path}: {e}")
+        return None
 
 # Función para renderizar la proteína seleccionada
 def render_protein_from_data(pdb_data):
@@ -168,91 +149,21 @@ st.title("Visualización 3D de Proteínas")
 # Sidebar para seleccionar proteínas
 protein_option = st.sidebar.selectbox(
     "Selecciona una proteína:",
-    list(proteins_data.keys()),
+    list(proteins_files.keys()),  # Lista de proteínas por nombre
     key="protein_selector"  # Clave única para evitar errores
 )
 
-# Renderizar la estructura 3D
+# Cargar el archivo PDB correspondiente
 if protein_option:
-    pdb_data = proteins_data[protein_option]  # Obtener los datos PDB de la proteína seleccionada
-    view = render_protein_from_data(pdb_data)
-    if view:  # Verificar que se generó el objeto view
-        # Generar el HTML del visualizador y mostrarlo
-        protein_html = view._make_html()
-        # Aquí se usa st.components.v1.html para renderizar el HTML generado
-        st.components.v1.html(protein_html, height=500, scrolling=True)
-    else:
-        st.warning("No se pudo renderizar la proteína seleccionada.")
-import streamlit as st
-import py3Dmol
+    pdb_file_path = proteins_files[protein_option]  # Ruta del archivo PDB
+    pdb_data = load_pdb_file(pdb_file_path)  # Leer el archivo PDB
 
-# Datos de proteínas en formato PDB
-proteins_data = {
-    "Insulina": """
-HEADER    INSULIN
-ATOM      1  N   ASN A   1      14.456  20.331   5.482  1.00 40.00           N  
-ATOM      2  CA  ASN A   1      15.913  20.276   5.389  1.00 40.00           C  
-ATOM      3  C   ASN A   1      16.421  21.708   5.492  1.00 40.00           C  
-TER
-END
-""",
-    "Glucagón": """
-HEADER    GLUCAGON
-ATOM      1  N   HIS A   1      12.456  19.331   4.482  1.00 50.00           N  
-ATOM      2  CA  HIS A   1      13.913  19.276   4.389  1.00 50.00           C  
-ATOM      3  C   HIS A   1      14.421  20.708   4.492  1.00 50.00           C  
-TER
-END
-""",
-    "Hemoglobina": """
-HEADER    HEMOGLOBIN
-ATOM      1  N   GLY A   1      10.456  18.331   3.482  1.00 60.00           N  
-ATOM      2  CA  GLY A   1      11.913  18.276   3.389  1.00 60.00           C  
-ATOM      3  C   GLY A   1      12.421  19.708   3.492  1.00 60.00           C  
-TER
-END
-""",
-    "Colágeno": """
-HEADER    COLLAGEN
-ATOM      1  N   PRO A   1       9.456  17.331   2.482  1.00 70.00           N  
-ATOM      2  CA  PRO A   1      10.913  17.276   2.389  1.00 70.00           C  
-ATOM      3  C   PRO A   1      11.421  18.708   2.492  1.00 70.00           C  
-TER
-END
-"""
-}
-
-# Función para renderizar la proteína seleccionada
-def render_protein_from_data(pdb_data):
-    try:
-        # Crear el visualizador 3D con py3Dmol
-        view = py3Dmol.view(width=800, height=500)
-        view.addModel(pdb_data, "pdb")  # Cargar el modelo en formato PDB
-        view.setStyle({"cartoon": {"color": "spectrum"}})  # Estilo del modelo
-        view.zoomTo()  # Ajustar zoom
-        return view
-    except Exception as e:
-        st.error(f"Error al renderizar la proteína: {e}")
-        return None
-
-# Configuración del dashboard
-st.title("Visualización 3D de Proteínas")
-
-# Sidebar para seleccionar proteínas
-protein_option = st.sidebar.selectbox(
-    "Selecciona una proteína:",
-    list(proteins_data.keys()),
-    key="protein_selector"  # Clave única para evitar errores
-)
-
-# Renderizar la estructura 3D
-if protein_option:
-    pdb_data = proteins_data[protein_option]  # Obtener los datos PDB de la proteína seleccionada
-    view = render_protein_from_data(pdb_data)
-    if view:  # Verificar que se generó el objeto view
-        # Generar el HTML del visualizador y mostrarlo
-        protein_html = view._make_html()
-        # Aquí se usa st.components.v1.html para renderizar el HTML generado
-        st.components.v1.html(protein_html, height=500, scrolling=True)
-    else:
-        st.warning("No se pudo renderizar la proteína seleccionada.")
+    if pdb_data:  # Si se cargaron los datos correctamente
+        view = render_protein_from_data(pdb_data)
+        if view:  # Verificar que se generó el objeto view
+            # Generar el HTML del visualizador y mostrarlo
+            protein_html = view._make_html()
+            # Aquí se usa st.components.v1.html para renderizar el HTML generado
+            st.components.v1.html(protein_html, height=500, scrolling=True)
+        else:
+            st.warning("No se pudo renderizar la proteína seleccionada.")
