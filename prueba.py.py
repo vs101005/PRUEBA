@@ -149,7 +149,7 @@ if uploaded_pdb_file:
     # Renderiza la estructura 3D
     protein_view = render_protein_from_file(uploaded_pdb_file)
     # Genera el HTML para incrustarlo en Streamlit
-    protein_html = protein_view.render()
+    protein_html = protein_view.render().decode("utf-8")  # Asegura que es una cadena válida
     # Muestra el modelo 3D interactivo
     st.components.v1.html(protein_html, height=500)
 else:
