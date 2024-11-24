@@ -113,44 +113,39 @@ else:
 import streamlit as st
 import py3Dmol
 
-# Función para cargar y renderizar la proteína 3D
+# Función para cargar y renderizar el modelo 3D
 def render_protein_from_file(pdb_file):
-    # Lee el contenido del archivo PDB
     pdb_data = pdb_file.read().decode("utf-8")
-    
-    # Crea la vista en py3Dmol
     view = py3Dmol.view(width=800, height=400)
-    view.addModel(pdb_data, "pdb")  # Añade el modelo PDB
-    view.setStyle({'cartoon': {'color': 'spectrum'}})  # Estilo cartoon y color espectro
-    view.zoomTo()  # Ajusta el zoom automáticamente
-    return view
+    view.addModel(pdb_data, "pdb")  # Cargar el modelo
+    view.setStyle({"cartoon": {"color": "spectrum"}})  # Aplicar estilo
+    view.zoomTo()  # Ajustar el zoom
+    return view.render()  # Devuelve el HTML renderizado
 
 # Interfaz Streamlit
-st.title("Visualización 3D Interactiva de Proteínas")
+st.title("Visualización 3D de Proteínas")
 
-# Selector para que el usuario elija una proteína
-st.sidebar.title("Opciones de Proteína")
+# Selector para proteína
 protein_option = st.sidebar.selectbox(
-    "Selecciona una proteína para cargar su estructura PDB:",
+    "Selecciona una proteína:",
     ["Insulina", "Glucagón", "Hemoglobina", "Colágeno"]
 )
 
-# Subida del archivo PDB correspondiente
-st.sidebar.subheader(f"Sube el archivo PDB para la proteína seleccionada ({protein_option})")
-uploaded_pdb_file = st.sidebar.file_uploader(
-    "Cargar archivo PDB",
-    type=["pdb"],
-    key=f"pdb_{protein_option}"
-)
+# Subida del archivo PDB
+uploaded_file = st.sidebar.file_uploader("Sube un archivo PDB:", type=["pdb"])
 
-# Mostrar la estructura 3D si el archivo ha sido cargado
-if uploaded_pdb_file:
-    st.subheader(f"Estructura 3D: {protein_option}")
-    # Renderiza la estructura 3D
-    protein_view = render_protein_from_file(uploaded_pdb_file)
-    # Genera el HTML para incrustarlo en Streamlit
-    protein_html = protein_view.render().decode("utf-8")  # Asegura que es una cadena válida
-    # Muestra el modelo 3D interactivo
-    st.components.v1.html(protein_html, height=500)
+if uploaded_file is not None:
+    try:
+        # Renderizar la proteína
+        protein_html = render_protein_from_file(uploaded_file).decode("utf-8")
+        
+        # Validar que el HTML no esté vacío
+        if protein_html.strip():
+            # Renderizar el modelo 3D interactivo
+            st.components.v1.html(protein_html, height=500)
+        else:
+            st.error("El archivo PDB no generó un modelo válido. Por favor, verifica el archivo.")
+    except Exception as e:
+        st.error(f"Ocurrió un error al renderizar la estructura 3D: {e}")
 else:
-    st.write("Sube un archivo PDB para visualizar la estructura de la proteína seleccionada.")
+    st.info("Sube un archivo PDB para visualizar su estructura 3D.")
