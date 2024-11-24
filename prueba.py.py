@@ -113,46 +113,49 @@ else:
 import streamlit as st
 import py3Dmol
 
-# Función para renderizar el modelo 3D a partir de un archivo PDB
+# Función para renderizar el modelo 3D desde un archivo PDB
 def render_protein_from_file(pdb_file):
     try:
-        # Leer el contenido del archivo directamente como texto
-        pdb_data = pdb_file.read()  # Lee el archivo en formato binario
-        if isinstance(pdb_data, bytes):  # Verifica si es un tipo binario
-            pdb_data = pdb_data.decode("utf-8")  # Decodifica solo si es necesario
+        # Leer el contenido del archivo PDB
+        pdb_data = pdb_file.read()  # Leer en formato binario
+        if isinstance(pdb_data, bytes):
+            pdb_data = pdb_data.decode("utf-8")  # Decodificar si es necesario
 
-        # Crear el objeto de visualización en py3Dmol
+        # Crear el visualizador 3D con py3Dmol
         view = py3Dmol.view(width=800, height=400)
-        view.addModel(pdb_data, "pdb")  # Cargar el modelo
-        view.setStyle({"cartoon": {"color": "spectrum"}})  # Aplicar estilo
-        view.zoomTo()  # Ajustar el zoom
-        return view.render()  # Renderiza el HTML para visualizar
+        view.addModel(pdb_data, "pdb")  # Cargar el modelo en formato PDB
+        view.setStyle({"cartoon": {"color": "spectrum"}})  # Estilo del modelo
+        view.zoomTo()  # Ajustar zoom
+
+        # Devolver el HTML generado
+        return view.render()
     except Exception as e:
-        # Manejo de errores para identificar problemas con el archivo o el renderizador
         st.error(f"Error al procesar el archivo PDB: {e}")
         return None
 
-# Título de la aplicación
+# Configuración del dashboard
 st.title("Visualización 3D de Proteínas")
 
-# Selector para proteína con clave única
+# Sidebar para seleccionar proteínas
 protein_option = st.sidebar.selectbox(
     "Selecciona una proteína:",
     ["Insulina", "Glucagón", "Hemoglobina", "Colágeno"],
-    key="protein_selector"  # Clave única para este widget
+    key="protein_selector"  # Clave única
 )
 
-# Subida del archivo PDB con clave única
+# Subida de archivo
 uploaded_file = st.sidebar.file_uploader(
     "Sube un archivo PDB:",
     type=["pdb"],
-    key="file_uploader"  # Clave única para este widget
+    key="file_uploader"  # Clave única
 )
 
-# Renderizar estructura 3D si se sube un archivo
+# Renderizar la estructura 3D
 if uploaded_file is not None:
     protein_html = render_protein_from_file(uploaded_file)
-    if protein_html:
+    if protein_html:  # Verificar que se generó el HTML
         st.components.v1.html(protein_html, height=500)  # Mostrar el modelo
+    else:
+        st.warning("No se pudo renderizar el archivo PDB. Verifica el formato.")
 else:
     st.info("Sube un archivo PDB para visualizar su estructura 3D.")
