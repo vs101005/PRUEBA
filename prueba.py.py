@@ -113,7 +113,7 @@ else:
 import streamlit as st
 import py3Dmol
 
-# Datos de proteínas en formato PDB (puedes agregar más según sea necesario)
+# Datos de proteínas en formato PDB
 proteins_data = {
     "Insulina": """
 HEADER    INSULIN
@@ -153,11 +153,11 @@ END
 def render_protein_from_data(pdb_data):
     try:
         # Crear el visualizador 3D con py3Dmol
-        view = py3Dmol.view(width=800, height=400)
+        view = py3Dmol.view(width=800, height=500)
         view.addModel(pdb_data, "pdb")  # Cargar el modelo en formato PDB
         view.setStyle({"cartoon": {"color": "spectrum"}})  # Estilo del modelo
         view.zoomTo()  # Ajustar zoom
-        return view.render()  # Devolver el HTML generado
+        return view  # Devolver el objeto view
     except Exception as e:
         st.error(f"Error al renderizar la proteína: {e}")
         return None
@@ -175,8 +175,10 @@ protein_option = st.sidebar.selectbox(
 # Renderizar la estructura 3D
 if protein_option:
     pdb_data = proteins_data[protein_option]  # Obtener los datos PDB de la proteína seleccionada
-    protein_html = render_protein_from_data(pdb_data)
-    if protein_html:  # Verificar que se generó el HTML
-        st.components.v1.html(protein_html, height=500)  # Mostrar el modelo
+    view = render_protein_from_data(pdb_data)
+    if view:  # Verificar que se generó el objeto view
+        # Generar el HTML del visualizador y mostrarlo
+        protein_html = view._make_html()  # Usar _make_html() en lugar de render()
+        st.components.v1.html(protein_html, height=500)
     else:
         st.warning("No se pudo renderizar la proteína seleccionada.")
