@@ -123,10 +123,10 @@ def render_protein(protein_pdb):
 
 # Diccionario con las proteínas y sus estructuras PDB
 protein_structures = {
-    "Insulina": """<INSULIN_PDB_STRUCTURE>""",  # Reemplaza con la estructura PDB de insulina
-    "Glucagon": """<GLUCAGON_PDB_STRUCTURE>""",  # Reemplaza con la estructura PDB de glucagón
-    "Hemoglobina": """<HEMOGLOBIN_PDB_STRUCTURE>""",  # Reemplaza con la estructura PDB de hemoglobina
-    "Colageno": """<COLLAGEN_PDB_STRUCTURE>"""  # Reemplaza con la estructura PDB de colágeno
+    "Insulina": """1zei""",  # Reemplaza con la estructura PDB de insulina
+    "Glucagon": """7lck.pdb""",  # Reemplaza con la estructura PDB de glucagón
+    "Hemoglobina": """1shr.pdb""",  # Reemplaza con la estructura PDB de hemoglobina
+    "Colageno": """5nb1"""  # Reemplaza con la estructura PDB de colágeno
 }
 
 # Interfaz Streamlit
