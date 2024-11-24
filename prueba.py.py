@@ -115,12 +115,22 @@ import py3Dmol
 
 # Función para renderizar el modelo 3D a partir de un archivo PDB
 def render_protein_from_file(pdb_file):
-    pdb_data = pdb_file.read().decode("utf-8")
-    view = py3Dmol.view(width=800, height=400)
-    view.addModel(pdb_data, "pdb")  # Cargar el modelo
-    view.setStyle({"cartoon": {"color": "spectrum"}})  # Aplicar estilo
-    view.zoomTo()  # Ajustar el zoom
-    return view.render()  # Devuelve el HTML renderizado
+    try:
+        # Leer el contenido del archivo directamente como texto
+        pdb_data = pdb_file.read()  # Lee el archivo en formato binario
+        if isinstance(pdb_data, bytes):  # Verifica si es un tipo binario
+            pdb_data = pdb_data.decode("utf-8")  # Decodifica solo si es necesario
+
+        # Crear el objeto de visualización en py3Dmol
+        view = py3Dmol.view(width=800, height=400)
+        view.addModel(pdb_data, "pdb")  # Cargar el modelo
+        view.setStyle({"cartoon": {"color": "spectrum"}})  # Aplicar estilo
+        view.zoomTo()  # Ajustar el zoom
+        return view.render()  # Renderiza el HTML para visualizar
+    except Exception as e:
+        # Manejo de errores para identificar problemas con el archivo o el renderizador
+        st.error(f"Error al procesar el archivo PDB: {e}")
+        return None
 
 # Título de la aplicación
 st.title("Visualización 3D de Proteínas")
@@ -141,16 +151,8 @@ uploaded_file = st.sidebar.file_uploader(
 
 # Renderizar estructura 3D si se sube un archivo
 if uploaded_file is not None:
-    try:
-        # Generar el HTML de la proteína
-        protein_html = render_protein_from_file(uploaded_file).decode("utf-8")
-        
-        # Validar que el HTML no esté vacío
-        if protein_html.strip():
-            st.components.v1.html(protein_html, height=500)
-        else:
-            st.error("El archivo PDB no generó un modelo válido. Verifica el archivo.")
-    except Exception as e:
-        st.error(f"Error al renderizar la estructura 3D: {e}")
+    protein_html = render_protein_from_file(uploaded_file)
+    if protein_html:
+        st.components.v1.html(protein_html, height=500)  # Mostrar el modelo
 else:
     st.info("Sube un archivo PDB para visualizar su estructura 3D.")
