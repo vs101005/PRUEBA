@@ -113,41 +113,38 @@ else:
 import streamlit as st
 import py3Dmol
 
-# Mapeo de proteínas a sus códigos PDB
-proteinas_pdb = {
-    "Insulina": "1ZEI",  # Código PDB de la insulina
-    "Glucagon": "7LCK",  # Código PDB del glucagón
-    "Hemoglobina": "1SHR",  # Código PDB de la hemoglobina
-    "Colageno": "5NBI",  # Código PDB del colágeno
-}
-
-# Título del Dashboard
-st.title("Visualización 3D de Estructuras Proteicas")
-
-# Selector de proteínas
-proteina_seleccionada = st.selectbox(
-    "Selecciona una proteína para visualizar su estructura 3D",
-    list(proteinas_pdb.keys())
-)
-
-# Obtener el código PDB de la proteína seleccionada
-codigo_pdb = proteinas_pdb[proteina_seleccionada]
-
-# Mostrar el código seleccionado
-st.write(f"Mostrando la estructura de **{proteina_seleccionada}** (PDB: `{codigo_pdb}`)")
-
-# Función para mostrar el modelo 3D con py3Dmol
-def mostrar_estructura(pdb_code):
-    view = py3Dmol.view(query=f"pdb:{pdb_code}")
-    view.setStyle({"cartoon": {"color": "spectrum"}})
-    view.zoomTo()
+# Función para visualizar estructuras 3D
+def render_protein(protein_pdb):
+    view = py3Dmol.view(width=800, height=400)
+    view.addModel(protein_pdb, "pdb")  # Carga el modelo desde el contenido del archivo PDB
+    view.setStyle({'cartoon': {'color': 'spectrum'}})  # Estilo de dibujo en forma de "cartoon"
+    view.zoomTo()  # Ajusta el zoom para mostrar toda la estructura
     return view
 
-# Renderizar el modelo 3D
-view = mostrar_estructura(codigo_pdb)
-view_html = view.show(returntype="html")
+# Diccionario con las proteínas y sus estructuras PDB
+protein_structures = {
+    "Insulina": """<INSULIN_PDB_STRUCTURE>""",  # Reemplaza con la estructura PDB de insulina
+    "Glucagon": """<GLUCAGON_PDB_STRUCTURE>""",  # Reemplaza con la estructura PDB de glucagón
+    "Hemoglobina": """<HEMOGLOBIN_PDB_STRUCTURE>""",  # Reemplaza con la estructura PDB de hemoglobina
+    "Colageno": """<COLLAGEN_PDB_STRUCTURE>"""  # Reemplaza con la estructura PDB de colágeno
+}
 
-# Incluir el modelo en Streamlit
-st.components.v1.html(view_html, height=500, scrolling=False)
+# Interfaz Streamlit
+st.title("Visualización 3D de Proteínas")
 
+# Selector para elegir la proteína
+protein_choice = st.selectbox("Selecciona una proteína para visualizar", list(protein_structures.keys()))
 
+# Mostrar la estructura de la proteína seleccionada
+if protein_choice:
+    st.subheader(f"Estructura 3D: {protein_choice}")
+    
+    # Obtener el archivo PDB de la proteína seleccionada
+    protein_pdb = protein_structures[protein_choice]
+    
+    # Renderizar la proteína y obtener el HTML
+    view = render_protein(protein_pdb)
+    view_html = view.render()  # Renderiza el modelo a HTML
+    
+    # Mostrar la visualización en Streamlit
+    st.components.v1.html(view_html, height=500)
