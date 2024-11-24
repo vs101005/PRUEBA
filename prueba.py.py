@@ -113,7 +113,7 @@ else:
 import streamlit as st
 import py3Dmol
 
-# Función para cargar y renderizar el modelo 3D
+# Función para renderizar el modelo 3D a partir de un archivo PDB
 def render_protein_from_file(pdb_file):
     pdb_data = pdb_file.read().decode("utf-8")
     view = py3Dmol.view(width=800, height=400)
@@ -122,30 +122,35 @@ def render_protein_from_file(pdb_file):
     view.zoomTo()  # Ajustar el zoom
     return view.render()  # Devuelve el HTML renderizado
 
-# Interfaz Streamlit
+# Título de la aplicación
 st.title("Visualización 3D de Proteínas")
 
-# Selector para proteína
+# Selector para proteína con clave única
 protein_option = st.sidebar.selectbox(
     "Selecciona una proteína:",
-    ["Insulina", "Glucagón", "Hemoglobina", "Colágeno"]
+    ["Insulina", "Glucagón", "Hemoglobina", "Colágeno"],
+    key="protein_selector"  # Clave única para este widget
 )
 
-# Subida del archivo PDB
-uploaded_file = st.sidebar.file_uploader("Sube un archivo PDB:", type=["pdb"])
+# Subida del archivo PDB con clave única
+uploaded_file = st.sidebar.file_uploader(
+    "Sube un archivo PDB:",
+    type=["pdb"],
+    key="file_uploader"  # Clave única para este widget
+)
 
+# Renderizar estructura 3D si se sube un archivo
 if uploaded_file is not None:
     try:
-        # Renderizar la proteína
+        # Generar el HTML de la proteína
         protein_html = render_protein_from_file(uploaded_file).decode("utf-8")
         
         # Validar que el HTML no esté vacío
         if protein_html.strip():
-            # Renderizar el modelo 3D interactivo
             st.components.v1.html(protein_html, height=500)
         else:
-            st.error("El archivo PDB no generó un modelo válido. Por favor, verifica el archivo.")
+            st.error("El archivo PDB no generó un modelo válido. Verifica el archivo.")
     except Exception as e:
-        st.error(f"Ocurrió un error al renderizar la estructura 3D: {e}")
+        st.error(f"Error al renderizar la estructura 3D: {e}")
 else:
     st.info("Sube un archivo PDB para visualizar su estructura 3D.")
